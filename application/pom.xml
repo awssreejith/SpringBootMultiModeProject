@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Parent will be root. In root we already defined  spring-boot-starter-parent as root's parent. So dependency resolution-->
+	<!-- will be automatically done -->
+	<parent>
+		<groupId>org.sreejith</groupId>
+		<artifactId>multi-module</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>org.sreejith</groupId>
+	<artifactId>application</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- We have a dependency with "service" module. so add the dependency here -->
+		<dependency>
+			<groupId>org.sreejith</groupId>
+			<artifactId>service</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Unlike "service" module, we need this plugin here. Becuase this module
+				 has the main function and compiler will not complain about non availability
+				 of main function. Refer pom.xml of service module for explanation-->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

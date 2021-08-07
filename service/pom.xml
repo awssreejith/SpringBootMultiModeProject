@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Parent will be root. In root we already defined  spring-boot-starter-parent as root's parent. So dependency resolution-->
+    <!-- will be automatically done -->
+    <parent>
+        <groupId>org.sreejith</groupId>
+        <artifactId>multi-module</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.sreejith</groupId>
+    <artifactId>service</artifactId>
+    <packaging>jar</packaging> <!-- This tells to create a jar -->
+
+    <!-- VERY VERY VERY IMPORTANT >
+    < NEVER USE THE BELOW PLUGIN HERE BECAUSE THIS MODULE DOESN'T HAVE MAIN FILE >
+    < IF YOU USE BELOW PLUGIN, THEN COMPIATION WILL FAIL WITH MAIN NOT FOUND ERROR ->
+    < The below plugin will actually build the jar [BUT NEVER USE HERE. USE ONLY WHERE MAIN FUNCTION IS LOCATED]
+    -->
+
+    <!--build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build-->
+
+    <!-- The below dependency is added to support @Component and other spring annotations -->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.8</version>
+        </dependency>
+    </dependencies>
+
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+</project>

@@ -1,0 +1,185 @@
+This project will show the below stuffs
+ - Create a multi module project
+ - Each module will be built as seperate JAR file
+ - use mvn executable to build the entire jars from command line
+ - running all these jars through command prompt
+ 
+This project has 3 modules
+ - root module [no jars will be created but act as root node for other two modules]
+ - application module [This will have the main method and REST controller and end points]
+ - service module [This has a service component class which caters the request accessed from application module]
+ 
+Dependency
+ - application module depends on service module
+ 
+Step-1: Install maven and configure in PATH
+===========================================
+0) Download the latest maven zip file for windows from the site [ https://maven.apache.org/download.cgi ]
+1) unzip to a folder and set the path variable point to the bin folder
+eg: C:\MyStudy\apache-maven-3.8.1\bin
+
+Step-2: Create root module
+==========================
+0) Intellij -> new project
+1) Select "Maven" project type
+2) Add name and select folder and press OK
+3) Open the new project and delete "src" folder created.
+Note: We need only pom.xml file. The actual source codes will be spread across the application and service modules
+
+4) Update the pom.xml file as below
+
+    <groupId>org.sreejith</groupId>
+    <artifactId>multi-module</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging> <!-- This tells not to create a jar -->
+
+<!-- By adding parent as spring-boot-starter-parent of the root module spring will automatically -->
+<!-- resolve the dependency overhead-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.3</version>
+    </parent>
+	
+    <modules> <!-- We add our child modules here -->
+        <module>application</module>
+        <module>service</module>
+    </modules>
+	
+	<properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+Step-3: Create "service" module 
+===============================
+0) Rigth click the root project -> new -> module
+1) Select "Maven" and next
+Note: We create a Maven project than a Spring Assistant/Spring project as Spring project will create Application main also.
+We don't need main file in this module. we have "application" module for that
+
+2) Give "service" name and OK
+Note: This will automatically add the new module in root pom.xml file. If so you can remove the duplicate entry from root pom.xml
+
+3) Update the pom.xml as below
+
+<!-- Parent will be root. In root we already defined  spring-boot-starter-parent as root's parent. So dependency resolution-->
+<!-- will be automatically done -->
+   <parent>
+        <groupId>org.sreejith</groupId>
+        <artifactId>multi-module</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.sreejith</groupId>
+    <artifactId>service</artifactId>
+    <packaging>jar</packaging> <!-- This tells to create a jar -->
+
+    <!-- VERY VERY VERY IMPORTANT >
+    < NEVER USE THE BELOW PLUGIN HERE BECAUSE THIS MODULE DOESN'T HAVE MAIN FILE >
+    < IF YOU USE BELOW PLUGIN, THEN COMPIATION WILL FAIL WITH MAIN NOT FOUND ERROR ->
+    < The below plugin will actually build the jar [BUT NEVER USE HERE. USE ONLY WHERE MAIN FUNCTION IS LOCATED]
+    -->
+
+    <!--build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build-->
+
+    <!-- The below dependency is added to support @Component and other spring annotations -->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.8</version>
+        </dependency>
+    </dependencies>
+
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+
+Step-4: Create "application" module 
+===================================
+0) Intellij -> new -> "Spring Assistant"
+[we gonna create a Spring project since this module will have main file]
+1) Enter details and press OK
+2) Select "Spring web" and press OK
+3) Update the pom.xml as below
+
+	<!-- Parent will be root. In root we already defined  spring-boot-starter-parent as root's parent. So dependency resolution-->
+	<!-- will be automatically done -->
+	<parent>
+		<groupId>org.sreejith</groupId>
+		<artifactId>multi-module</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>org.sreejith</groupId>
+	<artifactId>application</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- We have a dependency with "service" module. so add the dependency here -->
+		<dependency>
+			<groupId>org.sreejith</groupId>
+			<artifactId>service</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Unlike "service" module, we need this plugin here. Becuase this module
+				 has the main function and compiler will not complain about non availability
+				 of main function. Refer pom.xml of service module for explanation-->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+
+Step-5: Build the project
+=========================
+0) open command prompt and go to root module
+1) run the below command
+mvn clean install
+
+2) The jar files [application-1.0.0.jar and service-1.0.0.jar will be created]
+
+3) To run the application, copy both jar files to some other folder and open command prompt and issue below command
+
+java -jar application-1.0.0.jar and service-1.0.0.jar
+
+4) Test you application
+
+VERY VERY IMPORTANT
+5)Sometimes you make code chnage and want to build only a particular module [eg "service" module], the issue the command as below
+
+mvn -pl service clean install
